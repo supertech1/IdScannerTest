@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>688243549007-397vfcq6stkhi3orfafro2oilmqddafb.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.688243549007-397vfcq6stkhi3orfafro2oilmqddafb</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBXTSpPp98CSJmc-UXaqM9vckONMobNkX0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>688243549007</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.blusalt.IdScanner</string>
+	<key>PROJECT_ID</key>
+	<string>idscanner-98fbd</string>
+	<key>STORAGE_BUCKET</key>
+	<string>idscanner-98fbd.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:688243549007:ios:8acf62560d57d7b1649b3a</string>
+	<key>DATABASE_URL</key>
+	<string>https://idscanner-98fbd.firebaseio.com</string>
+</dict>
+</plist>

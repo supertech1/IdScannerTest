@@ -38,7 +38,7 @@ class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
 
     // set license
     if (Theme.of(context).platform == TargetPlatform.iOS) {
-      license = "";
+      license = "${config.bLinkLicenseKeyIos}";
     } else if (Theme.of(context).platform == TargetPlatform.android) {
       license = "${config.bLinkLicenseKeyAndroid}";
     }
