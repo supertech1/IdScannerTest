@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "688243549007",
+    "firebase_url": "https://idscanner-98fbd.firebaseio.com",
+    "project_id": "idscanner-98fbd",
+    "storage_bucket": "idscanner-98fbd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688243549007:android:9cc2e24f5b8b2f1d649b3a",
+        "android_client_info": {
+          "package_name": "com.example.IdScannerTest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "688243549007-u43ctrldodcfj76gk3nf9u3e7qbr1i77.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnT_0eLo_Dnxx4MMo9JPWpL4Z9rnlpuIc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "688243549007-u43ctrldodcfj76gk3nf9u3e7qbr1i77.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
