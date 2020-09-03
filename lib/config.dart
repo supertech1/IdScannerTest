@@ -1,0 +1,3 @@
+const apiKey = "AIzaSyBnT_0eLo_Dnxx4MMo9JPWpL4Z9rnlpuIc";
+const bLinkLicenseKeyAndroid =
+    "sRwAAAAVY29tLmJsdXNhbHQuaWRzY2FubmVyRiZNQ7eDdW08WQADCjAh85XYXv5pM7bO6Np3NuI0mU1ty8iezXcPdOlNTQgt1pSR2HKx/aX51OqZ2H5AsCL+3V56RLL7e8d+Ln2yiz+km7jlQd9ClfgetbguFpR+z0bJWwXDZdouoNUlQZzV6LQCDaxYOc94dauqYvZ7+JkNeMC5PnRgyS775VVs0h81v0fhUlkLN/6l319f10W7RaBZv3emZzpP03VIelbhQb5z2yaJvAmn2bBNKiBHKa06Bi1DGA6Whf/yjw==";
