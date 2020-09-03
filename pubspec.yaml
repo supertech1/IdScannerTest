@@ -30,6 +30,7 @@ dependencies:
   provider: ^4.3.2+1
   http: ^0.12.2
   shared_preferences: ^0.5.10
+  blinkid_flutter: ^5.7.1
 
 dev_dependencies:
   flutter_test:

@@ -117,8 +117,8 @@ class _AuthFormState extends State<AuthForm> {
                   FlatButton(
                     child: Text(
                       _isLogin
-                          ? "Create new Account"
-                          : "Already have an account?",
+                          ? "Not yet a user? Create Account"
+                          : "Already have an account? Login",
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
                     onPressed: () {

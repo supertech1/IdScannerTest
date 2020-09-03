@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:688243549007:android:9cc2e24f5b8b2f1d649b3a",
+        "mobilesdk_app_id": "1:688243549007:android:96f48534a25fad76649b3a",
         "android_client_info": {
-          "package_name": "com.example.IdScannerTest"
+          "package_name": "com.blusalt.IdScanner"
         }
       },
       "oauth_client": [

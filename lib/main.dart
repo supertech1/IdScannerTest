@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './providers/AuthProvider.dart';
+import './providers/IdentityDocumentProvider.dart';
 
 import './screens/AuthScreen.dart';
 import './screens/SplashScreen.dart';
@@ -15,8 +16,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AuthProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, IdentityDocumentProvider>(
+          update: (ctx, auth, idp) {
+            return IdentityDocumentProvider(auth.token, auth.userId);
+          },
+        ),
+      ],
       child: Consumer<AuthProvider>(builder: (bCtx, auth, _) {
         return MaterialApp(
           title: 'Flutter Demo',
