@@ -1,0 +1,35 @@
+PODS:
+  - blinkid_flutter (5.7.1):
+    - Flutter
+    - PPBlinkID (~> 5.7.1)
+  - Flutter (1.0.0)
+  - PPBlinkID (5.7.1)
+  - shared_preferences (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - blinkid_flutter (from `.symlinks/plugins/blinkid_flutter/ios`)
+  - Flutter (from `Flutter`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+
+SPEC REPOS:
+  trunk:
+    - PPBlinkID
+
+EXTERNAL SOURCES:
+  blinkid_flutter:
+    :path: ".symlinks/plugins/blinkid_flutter/ios"
+  Flutter:
+    :path: Flutter
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
+
+SPEC CHECKSUMS:
+  blinkid_flutter: 21f0f25cfd289114e2cf9bc0390cab073cb4cf4a
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  PPBlinkID: a590bc58ae9ae302433235737f15ed142276cc77
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.9.1
