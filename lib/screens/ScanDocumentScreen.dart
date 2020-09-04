@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +9,7 @@ import '../providers/IdentityDocumentProvider.dart';
 import '../models/IdentityDocumentModel.dart';
 
 import '../widgets/scan_doc_screen_widgets/doc_image.dart';
+import '../widgets/scan_doc_screen_widgets/single_document.dart';
 
 import '../config.dart' as config;
 
@@ -95,13 +94,24 @@ class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
             userData.add({"docType": docType});
           });
 
-          Provider.of<IdentityDocumentProvider>(context, listen: false)
+          setState(() {
+            _isLoading = true;
+          });
+          await Provider.of<IdentityDocumentProvider>(context, listen: false)
               .uploadDocumentData(userData);
+          await Provider.of<IdentityDocumentProvider>(context, listen: false)
+              .fetchDocumentData()
+              .then((_) {
+            setState(() {
+              _isLoading = false;
+              showData = true;
+            });
+          });
 
           return;
         }
       }
-    } on PlatformException {
+    } on PlatformException catch (err) {
       showDialog(
         context: context,
         builder: (bCtx) => AlertDialog(
@@ -125,23 +135,22 @@ class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildResult(result.fullName, "fullName", "FULL NAME"),
-          // buildDateResult(result.dateOfBirth, "dateOfBirth", "DATE OF BIRTH"),
+          buildDateResult(result.dateOfBirth, "dateOfBirth", "DATE OF BIRTH"),
           buildResult(result.age.toString(), "age", "AGE"),
           buildResult(result.sex, "sex", "SEX"),
           buildResult(result.address, "address", "ADDRESS"),
-          // buildResult(result.maritalStatus, "maritalStatus", "Marital Status"),
-          // // buildDateResult(result.dateOfIssue, "dateOfIssue", "DATE OF ISSUE"),
-          // // buildDateResult(
-          // //     result.dateOfExpiry, "dateOfExpiry", "DATE OF EXPIRY"),
-          // buildResult(
-          //     result.documentNumber, "documentNumber", "DOCUMENT NUMBER"),
-          // buildResult(
-          //     result.issuingAuthority, "issuingAuthority", "ISSUING AUTHORITY"),
-          // buildResult(result.nationality, "nationality", "NATIONALITY"),
-          // buildResult(result.profession, "profession", "PROFESSION"),
-          // buildResult(result.race, "race", "RACE"),
-          // buildResult(result.religion, "religion", "RELIGION"),
-          // buildDriverLicenceResult(result.driverLicenseDetailedInfo),
+          buildResult(result.maritalStatus, "maritalStatus", "Marital Status"),
+          buildDateResult(result.dateOfIssue, "dateOfIssue", "DATE OF ISSUE"),
+          buildDateResult(
+              result.dateOfExpiry, "dateOfExpiry", "DATE OF EXPIRY"),
+          buildResult(
+              result.documentNumber, "documentNumber", "DOCUMENT NUMBER"),
+          buildResult(
+              result.issuingAuthority, "issuingAuthority", "ISSUING AUTHORITY"),
+          buildResult(result.nationality, "nationality", "NATIONALITY"),
+          buildResult(result.profession, "profession", "PROFESSION"),
+          buildResult(result.race, "race", "RACE"),
+          buildResult(result.religion, "religion", "RELIGION"),
         ],
       ),
     );
@@ -183,28 +192,19 @@ class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
     );
   }
 
-  Widget buildDateResult(Date result, String key, String propertyName) {
-    if (result == null || result.year == 0) {
-      return Container();
-    }
-
-    return buildResult(
-        "${result.day} - ${result.month} - ${result.year}", key, propertyName);
-  }
-
-  Widget buildDriverLicenceResult(DriverLicenseDetailedInfo result) {
+  Widget buildDateResult(dynamic result, String key, String propertyName) {
     if (result == null) {
       return Container();
     }
+    String date = "";
 
-    return Column(
-      children: [
-        buildResult(result.restrictions, "restrictions", "RESTRICTIONS"),
-        buildResult(result.endorsements, "endorsements", "ENDORSEMENTS"),
-        buildResult(result.vehicleClass, "vehicleClass", "VEHICLE CLASS"),
-        buildResult(result.conditions, "conditions", "CONDITIONS"),
-      ],
-    );
+    if (result is Date) {
+      date = "${result.day} - ${result.month} - ${result.year}";
+    } else {
+      date = result;
+    }
+
+    return buildResult(date, key, propertyName);
   }
 
   @override
@@ -214,50 +214,20 @@ class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
     if (_isInit) {
       Provider.of<IdentityDocumentProvider>(context, listen: false)
           .fetchDocumentData()
-          .then((userFetchedData) {
-        if (userFetchedData != null) {
-          setState(() {
-            dynamic data = userFetchedData;
-            _resultContainer = getIdResultContainer(data);
-            _fullDocumentFrontImageBase64 = data.fullDocumentFrontImage;
-            _fullDocumentBackImageBase64 = data.fullDocumentBackImage;
-            _faceImageBase64 = data.faceImage;
-            // docType = data.docType;
-            _isLoading = false;
-            showData = true;
-          });
-        } else {
-          setState(() {
-            _isLoading = false;
-            showData = false;
-          });
-        }
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+          showData = true;
+        });
       });
     }
+    _isInit = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget fullDocumentFrontImage = DocImage(
-      imageBase64: _fullDocumentFrontImageBase64,
-      imageTag: "Document Front Side :",
-      width: 350,
-      height: 180,
-    );
-
-    Widget fullDocumentBackImage = DocImage(
-      imageBase64: _fullDocumentBackImageBase64,
-      imageTag: "Document Back side :",
-      width: 350,
-      height: 180,
-    );
-
-    Widget faceImage = DocImage(
-      imageBase64: _faceImageBase64,
-      imageTag: "",
-      width: 100,
-      height: 150,
-    );
+    List<IdentityDocumentModel> documents =
+        Provider.of<IdentityDocumentProvider>(context).documents;
 
     return Scaffold(
       appBar: AppBar(
@@ -317,47 +287,29 @@ class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
                 )
               : Expanded(
                   child: showData
-                      ? Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView(
-                            padding: EdgeInsets.all(20),
-                            children: [
-                              Row(
-                                children: [
-                                  faceImage,
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // Text(
-                                          //   "${resultData.lastName} ${resultData.firstName}",
-                                          //   style: TextStyle(
-                                          //       fontWeight: FontWeight.bold,
-                                          //       fontSize: 22),
-                                          // ),
-                                          Text(
-                                            "[ $docType ]",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                              color: Theme.of(context)
-                                                  .primaryColorDark,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                      ? ListView(
+                          children: documents.length <= 0
+                              ? [
+                                  Container(
+                                    padding: EdgeInsets.only(top: 40),
+                                    child: Text(
+                                      "You have not scanned any Identity Document yet",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   )
-                                ],
-                              ),
-                              _resultContainer,
-                              fullDocumentFrontImage,
-                              fullDocumentBackImage,
-                            ],
-                          ),
+                                ]
+                              : documents.map(
+                                  (e) {
+                                    dynamic data = e;
+                                    print(data);
+                                    return SingleDocument(
+                                      docData: data,
+                                    );
+                                  },
+                                ).toList(),
                         )
                       : Container(),
                 ),

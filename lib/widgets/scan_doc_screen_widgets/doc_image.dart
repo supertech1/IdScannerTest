@@ -2,8 +2,8 @@ import "dart:convert";
 import 'package:flutter/material.dart';
 
 class DocImage extends StatelessWidget {
-  String imageBase64, imageTag;
-  double width, height;
+  final String imageBase64, imageTag;
+  final double width, height;
   DocImage({this.imageBase64, this.imageTag, this.width, this.height});
   @override
   Widget build(BuildContext context) {
