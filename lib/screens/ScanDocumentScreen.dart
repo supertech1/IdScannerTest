@@ -8,6 +8,8 @@ import 'package:blinkid_flutter/microblink_scanner.dart';
 import '../providers/AuthProvider.dart';
 import '../providers/IdentityDocumentProvider.dart';
 
+import '../models/IdentityDocumentModel.dart';
+
 import '../widgets/scan_doc_screen_widgets/doc_image.dart';
 
 import '../config.dart' as config;
@@ -18,6 +20,9 @@ class ScanDocumentScreen extends StatefulWidget {
 }
 
 class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
+  bool _isInit = true;
+  bool _isLoading = true;
+  bool showData = false;
   Widget _resultContainer = Container();
   String _fullDocumentFrontImageBase64 = "";
   String _fullDocumentBackImageBase64 = "";
@@ -76,19 +81,20 @@ class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
 
           _resultContainer = getIdResultContainer(result);
           setState(() {
-            resultData = result;
+            // resultData = result;
+            showData = true;
 
             _faceImageBase64 = result.faceImage;
             _resultContainer = _resultContainer;
             _fullDocumentFrontImageBase64 = result.fullDocumentFrontImage;
             _fullDocumentBackImageBase64 = result.fullDocumentBackImage;
+            userData.add({"faceImage": _faceImageBase64});
             userData
                 .add({"fullDocumentFrontImage": _fullDocumentFrontImageBase64});
-            userData
-                .add({"fullDocumentBackImage": _fullDocumentBackImageBase64});
+
+            userData.add({"docType": docType});
           });
 
-          print("tosinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
           Provider.of<IdentityDocumentProvider>(context, listen: false)
               .uploadDocumentData(userData);
 
@@ -113,29 +119,29 @@ class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
     }
   }
 
-  Widget getIdResultContainer(BlinkIdCombinedRecognizerResult result) {
+  Widget getIdResultContainer(dynamic result) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildResult(result.fullName, "fullName", "FULL NAME"),
-          buildDateResult(result.dateOfBirth, "dateOfBirth", "DATE OF BIRTH"),
+          // buildDateResult(result.dateOfBirth, "dateOfBirth", "DATE OF BIRTH"),
           buildResult(result.age.toString(), "age", "AGE"),
           buildResult(result.sex, "sex", "SEX"),
           buildResult(result.address, "address", "ADDRESS"),
-          buildResult(result.maritalStatus, "maritalStatus", "Marital Status"),
-          buildDateResult(result.dateOfIssue, "dateOfIssue", "DATE OF ISSUE"),
-          buildDateResult(
-              result.dateOfExpiry, "dateOfExpiry", "DATE OF EXPIRY"),
-          buildResult(
-              result.documentNumber, "documentNumber", "DOCUMENT NUMBER"),
-          buildResult(
-              result.issuingAuthority, "issuingAuthority", "ISSUING AUTHORITY"),
-          buildResult(result.nationality, "nationality", "NATIONALITY"),
-          buildResult(result.profession, "profession", "PROFESSION"),
-          buildResult(result.race, "race", "RACE"),
-          buildResult(result.religion, "religion", "RELIGION"),
-          buildDriverLicenceResult(result.driverLicenseDetailedInfo),
+          // buildResult(result.maritalStatus, "maritalStatus", "Marital Status"),
+          // // buildDateResult(result.dateOfIssue, "dateOfIssue", "DATE OF ISSUE"),
+          // // buildDateResult(
+          // //     result.dateOfExpiry, "dateOfExpiry", "DATE OF EXPIRY"),
+          // buildResult(
+          //     result.documentNumber, "documentNumber", "DOCUMENT NUMBER"),
+          // buildResult(
+          //     result.issuingAuthority, "issuingAuthority", "ISSUING AUTHORITY"),
+          // buildResult(result.nationality, "nationality", "NATIONALITY"),
+          // buildResult(result.profession, "profession", "PROFESSION"),
+          // buildResult(result.race, "race", "RACE"),
+          // buildResult(result.religion, "religion", "RELIGION"),
+          // buildDriverLicenceResult(result.driverLicenseDetailedInfo),
         ],
       ),
     );
@@ -199,6 +205,35 @@ class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
         buildResult(result.conditions, "conditions", "CONDITIONS"),
       ],
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    if (_isInit) {
+      Provider.of<IdentityDocumentProvider>(context, listen: false)
+          .fetchDocumentData()
+          .then((userFetchedData) {
+        if (userFetchedData != null) {
+          setState(() {
+            dynamic data = userFetchedData;
+            _resultContainer = getIdResultContainer(data);
+            _fullDocumentFrontImageBase64 = data.fullDocumentFrontImage;
+            _fullDocumentBackImageBase64 = data.fullDocumentBackImage;
+            _faceImageBase64 = data.faceImage;
+            // docType = data.docType;
+            _isLoading = false;
+            showData = true;
+          });
+        } else {
+          setState(() {
+            _isLoading = false;
+            showData = false;
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -274,51 +309,58 @@ class _ScanDocumentScreenState extends State<ScanDocumentScreen> {
               label: Text("Scan Document"),
             ),
           ),
-          Expanded(
-            child: resultData != null
-                ? Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView(
-                      padding: EdgeInsets.all(20),
-                      children: [
-                        Row(
-                          children: [
-                            faceImage,
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${resultData.lastName} ${resultData.firstName}",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 22),
-                                    ),
-                                    Text(
-                                      "[ $docType ]",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                        color:
-                                            Theme.of(context).primaryColorDark,
+          _isLoading
+              ? Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : Expanded(
+                  child: showData
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView(
+                            padding: EdgeInsets.all(20),
+                            children: [
+                              Row(
+                                children: [
+                                  faceImage,
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          // Text(
+                                          //   "${resultData.lastName} ${resultData.firstName}",
+                                          //   style: TextStyle(
+                                          //       fontWeight: FontWeight.bold,
+                                          //       fontSize: 22),
+                                          // ),
+                                          Text(
+                                            "[ $docType ]",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                              color: Theme.of(context)
+                                                  .primaryColorDark,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
-                            )
-                          ],
-                        ),
-                        _resultContainer,
-                        fullDocumentFrontImage,
-                        fullDocumentBackImage,
-                      ],
-                    ),
-                  )
-                : Container(),
-          ),
+                              _resultContainer,
+                              fullDocumentFrontImage,
+                              fullDocumentBackImage,
+                            ],
+                          ),
+                        )
+                      : Container(),
+                ),
         ],
       ),
     );
